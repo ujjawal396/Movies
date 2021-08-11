@@ -1,29 +1,38 @@
 import React from "react";
-import Child from "./Child";
+import Filter from "./Filter";
+import Navbar from "./Navbar";
 
 class App extends React.Component {
   state = {
-    child: true,
+    movies: [],
+    genre: [],
   };
+
+  componentDidMount() {
+    let f = async () => {
+      let responseGenre = await fetch("/genre");
+      let responseMovies = await fetch("/movies");
+      let moviesJson = await responseMovies.json();
+      let genreJson = await responseGenre.json();
+
+      this.setState({
+        movies: moviesJson,
+        genre: genreJson,
+      });
+    };
+
+    f();
+  }
 
   render() {
     return (
       <div>
-        <button
-          onClick={() => {
-            if (this.state.child) {
-              this.setState({ child: false });
-            } else {
-              this.setState({ child: true });
-            }
-          }}
-        >
-          child toggle
-        </button>
-
-        {this.state.child ? <Child /> : ""}
-
+        <Navbar />
         
+
+        <div className="row">
+          <Filter genreData = {this.state.genre}/>
+        </div>
       </div>
     );
   }
