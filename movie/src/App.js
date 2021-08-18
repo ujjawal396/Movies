@@ -15,10 +15,26 @@ class App extends React.Component {
     this.setState({ selectedFilter: filter });
   };
 
+  toggleLike = (id) => {
+    let index = this.state.movies.findIndex((el) => {
+      return el._id == id;
+    });
+
+    let currMoviesArr = this.state.movies.map((el) => el);
+
+    if (currMoviesArr[index].liked) {
+      currMoviesArr[index].liked = false;
+    } else {
+      currMoviesArr[index].liked = true;
+    }
+
+    this.setState({ movies: currMoviesArr });
+  };
+
   componentDidMount() {
     let f = async () => {
-      let responseGenre = await fetch("http://localhost:4000/genre");
-      let responseMovies = await fetch("http://localhost:4000/movies");
+      let responseGenre = await fetch("/genre");
+      let responseMovies = await fetch("/movies");
       let moviesJson = await responseMovies.json();
       let genreJson = await responseGenre.json();
 
@@ -46,6 +62,7 @@ class App extends React.Component {
           <div class="col-9 p-4">
             <Search />
             <Table
+              toggleLike={this.toggleLike}
               selectedFilter={this.state.selectedFilter}
               moviesData={this.state.movies}
             />
